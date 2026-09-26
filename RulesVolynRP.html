@@ -1,0 +1,2481 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VolynRP | Правила сервера</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        @font-face {
+            font-family: 'LogoSCUnboundedSans-Regular';
+            src: url('LogoSCUnboundedSans-Regular.ttf') format('truetype');
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+        }
+
+        :root {
+            --bg: #1f0b10;
+            --bg-soft: #2b1118;
+            --panel: rgba(56, 24, 34, 0.72);
+            --panel-strong: rgba(56, 24, 34, 0.9);
+            --line: rgba(244, 180, 190, 0.34);
+            --text: #fff1f3;
+            --muted: #d8aeb7;
+            --primary: #f28b9b;
+            --primary-2: #d95d72;
+            --green: #34d399;
+            --orange: #fbbf24;
+            --red: #f87171;
+            --shadow: 0 18px 48px rgba(24, 5, 10, 0.55);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'LogoSCUnboundedSans-Regular';
+            font-weight: 400;
+        }
+
+        .fa,
+        .fa-solid,
+        .fa-brands,
+        [class^="fa-"] {
+            font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+            font-weight: 900 !important;
+        }
+
+        html, body {
+            scrollbar-width: none;
+        }
+
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar,
+        .modal-panel::-webkit-scrollbar {
+            display: none;
+            width: 0;
+            height: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'LogoSCUnboundedSans-Regular';
+            font-weight: 400;
+            background:
+                radial-gradient(circle at top left, rgba(242, 139, 155, 0.18), transparent 28%),
+                radial-gradient(circle at bottom right, rgba(217, 93, 114, 0.18), transparent 30%),
+                linear-gradient(180deg, #14070b 0%, #2a1118 100%);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        a { text-decoration: none; }
+
+        .container {
+            width: min(1180px, calc(100% - 32px));
+            margin: 0 auto;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            background: rgba(20, 7, 11, 0.68);
+            border-bottom: 1px solid var(--line);
+            animation: topbarIn 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+        }
+
+        .topbar-inner {
+            height: 76px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 900;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-size: 0.82rem;
+        }
+
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, var(--primary), var(--primary-2));
+            box-shadow: 0 10px 24px rgba(242, 139, 155, 0.35);
+            font-size: 1.1rem;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .nav a, .nav button {
+            border: 2px solid var(--line);
+            background: rgba(255,255,255,0.02);
+            color: var(--text);
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .nav a:hover, .nav button:hover {
+            transform: translateY(-1px);
+            border-color: rgba(242, 139, 155, 0.5);
+            box-shadow: 0 10px 25px rgba(242, 139, 155, 0.14);
+        }
+
+        .page-tabs {
+            position: relative;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            min-width: 0;
+            flex: 1;
+            justify-content: flex-end;
+        }
+
+        .page-tabs::before {
+            content: "";
+            position: absolute;
+            z-index: 0;
+            left: var(--page-indicator-left, 0px);
+            top: var(--page-indicator-top, 0px);
+            width: var(--page-indicator-width, 0px);
+            height: var(--page-indicator-height, 0px);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(242, 139, 155, 0.92), rgba(217, 93, 114, 0.72));
+            box-shadow: 0 8px 22px rgba(242, 139, 155, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            pointer-events: none;
+            transition: left 0.42s cubic-bezier(0.2, 0.8, 0.2, 1), top 0.42s cubic-bezier(0.2, 0.8, 0.2, 1), width 0.42s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.42s cubic-bezier(0.2, 0.8, 0.2, 1);
+            animation: activeFillIn 0.7s ease both;
+        }
+
+        .page-tab {
+            position: relative;
+            z-index: 1;
+            flex: 1 1 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+            max-width: 100%;
+            justify-content: center;
+            text-align: center;
+            white-space: normal;
+            overflow-wrap: anywhere;
+            line-height: 1.25;
+            border-color: transparent !important;
+            background: transparent !important;
+        }
+
+        .page-tab.active {
+            color: var(--text);
+            text-shadow: none;
+        }
+
+        .page-tabs.has-indicator .page-tab.active {
+            color: #2a0d13;
+        }
+
+        .hero {
+            padding: 52px 0 22px;
+        }
+
+        .hero-box {
+            position: relative;
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 28px;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(56,24,34,0.84), rgba(35,12,19,0.96));
+            border: 2px solid var(--line);
+            border-radius: 32px;
+            padding: 40px 38px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .hero-box::before {
+            content: "";
+            position: absolute;
+            inset: auto -10% -25% 45%;
+            height: 280px;
+            background: radial-gradient(circle, rgba(242, 139, 155, 0.28), transparent 60%);
+            pointer-events: none;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(242, 139, 155, 0.1);
+            border: 1px solid rgba(242, 139, 155, 0.34);
+            color: var(--primary);
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 18px 0 12px;
+            font-size: clamp(2.2rem, 4vw, 4.4rem);
+            line-height: 1.02;
+            letter-spacing: -0.05em;
+        }
+
+        .highlight {
+            background: linear-gradient(90deg, var(--primary), #ffe0e5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subtitle {
+            max-width: 620px;
+            color: var(--muted);
+            font-size: 1.03rem;
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .btn {
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border: none;
+            border-radius: 14px;
+            padding: 14px 20px;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+        }
+
+        .btn::after {
+            content: "";
+            position: absolute;
+            inset: 0 auto 0 -80%;
+            width: 55%;
+            background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.32), transparent);
+            transform: skewX(-18deg);
+            transition: left 0.55s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            filter: brightness(1.08);
+        }
+
+        .btn:hover::after { left: 125%; }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), #ffb6c1);
+            color: #2a0d13;
+            box-shadow: 0 18px 34px rgba(242, 139, 155, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--line);
+            color: var(--text);
+        }
+
+        .status-board {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(100px, 1fr));
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .stat {
+            padding: 16px 14px;
+            border: 1px solid var(--line);
+            background: rgba(255,255,255,0.02);
+            border-radius: 18px;
+        }
+
+        .stat .value {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin-bottom: 6px;
+        }
+
+        .stat .label {
+            display: block;
+            color: var(--muted);
+            font-size: 0.74rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .mini-card {
+            position: relative;
+            background: linear-gradient(180deg, rgba(58,25,36,0.92), rgba(35,13,20,0.86));
+            border: 2px solid rgba(242, 139, 155, 0.38);
+            border-radius: 24px;
+            padding: 18px;
+            min-height: 290px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .mini-card::before {
+            content: "";
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(242, 139, 155, 0.3), transparent 65%);
+        }
+
+        .mini-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .mini-title {
+            font-size: 0.78rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 800;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            padding: 8px 10px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            background: rgba(52, 211, 153, 0.12);
+            color: #a7f3d0;
+            border: 1px solid rgba(52, 211, 153, 0.4);
+        }
+
+        .mini-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+            margin: 8px 0 18px;
+        }
+
+        .mini-icon {
+            width: 116px;
+            height: 116px;
+            border-radius: 30px;
+            display: grid;
+            place-items: center;
+            font-size: 2.6rem;
+            background: linear-gradient(135deg, rgba(242, 139, 155, 0.2), rgba(217, 93, 114, 0.22));
+            border: 1px solid rgba(242, 139, 155, 0.3);
+            box-shadow: inset 0 0 16px rgba(242, 139, 155, 0.16);
+        }
+
+        .mini-list {
+            position: relative;
+            z-index: 1;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            color: var(--muted);
+            font-size: 0.82rem;
+            line-height: 1.6;
+        }
+
+        .mini-list li::before {
+            content: "•";
+            color: var(--primary);
+            margin-right: 8px;
+        }
+
+        .rules {
+            padding: 36px 0 18px;
+        }
+
+        .section-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .section-head h2 {
+            margin: 0;
+            font-size: clamp(1.8rem, 2vw, 2.8rem);
+            letter-spacing: -0.04em;
+        }
+
+        .section-head p {
+            margin: 0;
+            color: var(--muted);
+            max-width: 420px;
+            line-height: 1.6;
+        }
+
+        .page-panel {
+            animation: pagePanelIn 0.38s ease both;
+        }
+
+        .topbar + main {
+            animation: contentIn 0.85s 0.12s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+        }
+
+        .page-panel.is-hidden { display: none; }
+
+        .mayor-panel,
+        .map-panel {
+            padding: 52px 0 40px;
+        }
+
+        .mayor-panel {
+            width: 100vw;
+            margin-left: calc(50% - 50vw);
+            padding-right: clamp(20px, 4vw, 64px);
+            padding-left: clamp(20px, 4vw, 64px);
+        }
+
+        .mayor-header,
+        .map-header {
+            position: relative;
+            margin-bottom: 22px;
+            padding: 26px 28px;
+            border: 2px solid var(--line);
+            border-radius: 22px;
+            background: linear-gradient(135deg, rgba(242, 139, 155, 0.14), rgba(255, 255, 255, 0.025));
+            overflow: hidden;
+        }
+
+        .mayor-header {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr);
+            column-gap: 20px;
+            align-items: center;
+            background:
+                linear-gradient(115deg, rgba(242, 139, 155, 0.2), rgba(255, 255, 255, 0.035) 55%, rgba(242, 139, 155, 0.08)),
+                rgba(34, 12, 20, 0.68);
+            box-shadow: 0 18px 38px rgba(24, 5, 10, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+
+        .mayor-header-icon {
+            position: relative;
+            z-index: 1;
+            width: 72px;
+            height: 72px;
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(255, 190, 201, 0.48);
+            border-radius: 22px;
+            color: #fff1f4;
+            font-size: 1.8rem;
+            background: linear-gradient(145deg, rgba(242, 139, 155, 0.4), rgba(112, 36, 55, 0.5));
+            box-shadow: 0 12px 26px rgba(242, 139, 155, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+        }
+
+        .mayor-header::after {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            right: -56px;
+            top: -90px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(242, 139, 155, 0.32), transparent 68%);
+            pointer-events: none;
+        }
+
+        .mayor-header h2,
+        .map-header h2 {
+            position: relative;
+            z-index: 1;
+            margin: 0 0 8px;
+            font-size: clamp(1.8rem, 3vw, 3.2rem);
+        }
+
+        .mayor-kicker {
+            position: relative;
+            z-index: 1;
+            display: inline-flex;
+            margin-bottom: 10px;
+            color: var(--primary);
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .mayor-header-copy {
+            position: relative;
+            z-index: 1;
+            min-width: 0;
+        }
+
+        .mayor-header p,
+        .map-header p {
+            position: relative;
+            z-index: 1;
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .mayor-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .mayor-rule {
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            min-height: 116px;
+            padding: 22px 20px;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(242, 139, 155, 0.1), rgba(255, 255, 255, 0.025));
+            box-shadow: 0 12px 26px rgba(24, 5, 10, 0.18);
+            transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+            overflow: hidden;
+        }
+
+        .mayor-rule::after {
+            content: "";
+            position: absolute;
+            inset: auto -34px -48px auto;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(242, 139, 155, 0.18), transparent 68%);
+            pointer-events: none;
+        }
+
+        .mayor-rule:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary);
+            background: rgba(242, 139, 155, 0.15);
+        }
+
+        .mayor-number {
+            position: relative;
+            z-index: 1;
+            flex: 0 0 42px;
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            border: 2px solid rgba(242, 139, 155, 0.55);
+            border-radius: 13px;
+            color: #2a0d13;
+            background: linear-gradient(135deg, var(--primary), #ffb6c1);
+            box-shadow: 0 8px 18px rgba(242, 139, 155, 0.18);
+            font-weight: 800;
+        }
+
+        .mayor-rule-text {
+            position: relative;
+            z-index: 1;
+            padding-top: 4px;
+            line-height: 1.55;
+            color: #fff4f6;
+        }
+
+        .mayor-overview {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin: 0 0 22px;
+        }
+
+        .mayor-stat {
+            position: relative;
+            min-height: 92px;
+            padding: 18px 20px;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.018));
+            box-shadow: 0 12px 24px rgba(24, 5, 10, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            overflow: hidden;
+        }
+
+        .mayor-stat::before {
+            content: "";
+            position: absolute;
+            inset: 0 auto 0 0;
+            width: 3px;
+            background: linear-gradient(180deg, var(--primary), rgba(242, 139, 155, 0.1));
+        }
+
+        .mayor-stat strong,
+        .mayor-stat span {
+            display: block;
+        }
+
+        .mayor-stat strong {
+            margin-bottom: 6px;
+            color: var(--primary);
+            font-size: 1.55rem;
+            line-height: 1;
+        }
+
+        .mayor-stat span {
+            color: var(--muted);
+            font-size: 0.75rem;
+            line-height: 1.4;
+        }
+
+        .mayor-list .mayor-rule:nth-child(2) {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(242, 139, 155, 0.035));
+        }
+
+        .mayor-list .mayor-rule:nth-child(3) {
+            background: linear-gradient(145deg, rgba(242, 139, 155, 0.14), rgba(255, 255, 255, 0.025));
+        }
+
+        .map-frame {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            border: 2px solid var(--line);
+            border-radius: 150px;
+            padding: 0;
+            background: rgba(255, 255, 255, 0.035);
+            box-shadow: var(--shadow);
+        }
+
+        .map-frame > .interactive-map,
+        .map-frame > img {
+            width: 100%;
+            border-radius: 20px;
+        }
+
+        .map-mode-title {
+            margin: 48px 0 26px;
+            color: #ffffff;
+            font-size: clamp(2rem, 5vw, 4.4rem);
+            line-height: 1;
+            letter-spacing: 0.08em;
+            text-align: center;
+            text-transform: uppercase;
+            animation: mapTitleIn 0.75s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+        }
+
+        .map-mode-title::after {
+            content: "";
+            display: block;
+            height: 12px;
+            width: 0;
+            margin: 18px auto 0;
+            border-radius: 999px;
+            background: #ff003d;
+            animation: mapUnderlineIn 0.85s 0.22s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        .map-frame + .map-frame {
+            margin-top: 30px;
+        }
+
+        .map-main-legend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin: 0 0 18px;
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 82, 82, 0.8);
+            border-radius: 14px;
+            background: rgba(35, 11, 12, 0.78);
+            box-shadow: 0 0 0 1px rgba(255, 82, 82, 0.2), inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+        }
+
+        .map-main-legend .legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            color: #f4f5f7;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            line-height: 1.25;
+            text-align: center;
+        }
+
+        .map-main-legend .legend-icon {
+            width: 12px;
+            height: 12px;
+            flex: 0 0 12px;
+            border-radius: 50%;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
+        }
+
+        .map-main-legend .legend-icon.radar { background: rgba(244, 92, 118, 0.8); }
+        .map-main-legend .legend-icon.signal { background: rgba(124, 224, 164, 0.8); }
+        .map-main-legend .legend-icon.marker { background: rgba(170, 127, 255, 0.8); }
+        .map-main-legend .legend-icon.pin { background: rgba(110, 183, 255, 0.8); }
+
+        @media (max-width: 900px) {
+            .map-main-legend {
+                justify-content: flex-start;
+            }
+        }
+
+        .interactive-map {
+            position: relative;
+            overflow: hidden;
+            line-height: 0;
+            cursor: grab;
+            touch-action: none;
+        }
+
+        .interactive-map.is-dragging {
+            cursor: grabbing;
+        }
+
+        .map-controls {
+            position: absolute;
+            top: 82px;
+            left: 18px;
+            z-index: 20;
+            display: grid;
+            gap: 8px;
+            padding: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 14px;
+            background: rgba(15, 15, 18, 0.75);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+        }
+
+        .map-control {
+            width: 30px;
+            height: 30px;
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 10px;
+            background: rgba(17, 18, 22, 0.92);
+            color: #ffffff;
+            font: inherit;
+            font-size: 1.15rem;
+            line-height: 1;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .map-control[data-map-zoom="reset"] {
+            position: relative;
+            font-size: 0;
+        }
+
+        .map-control[data-map-zoom="reset"]::before {
+            content: "";
+            display: block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            border-radius: 4px;
+            box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.18);
+        }
+
+        .map-control:hover,
+        .map-control:focus-visible {
+            transform: translateY(-1px);
+            border-color: rgba(255, 255, 255, 0.34);
+            background: rgba(44, 44, 52, 0.96);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+            outline: none;
+        }
+
+        .custom-image-menu {
+            position: fixed;
+            z-index: 200;
+            display: grid;
+            min-width: 210px;
+            padding: 7px;
+            border: 1px solid rgba(244, 180, 190, 0.34);
+            border-radius: 12px;
+            background: rgba(24, 8, 14, 0.97);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: scale(0.96);
+            transform-origin: top left;
+            will-change: opacity, transform;
+            transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s ease;
+        }
+
+        .custom-image-menu.is-open {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: scale(1);
+            animation: customMenuIn 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+        }
+
+        .custom-image-menu.is-closing {
+            opacity: 0;
+            visibility: visible;
+            pointer-events: none;
+            transform: scale(0.96);
+            animation: customMenuOut 0.18s ease forwards;
+        }
+
+        @keyframes customMenuIn {
+            from { opacity: 0; transform: scale(0.94) translateY(-4px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @keyframes customMenuOut {
+            from { opacity: 1; transform: scale(1) translateY(0); }
+            to { opacity: 0; transform: scale(0.94) translateY(-4px); }
+        }
+
+        .custom-image-menu button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 0;
+            border-radius: 8px;
+            padding: 10px 12px;
+            background: transparent;
+            color: var(--text);
+            font: inherit;
+            font-size: 0.72rem;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .menu-icon {
+            width: 16px;
+            height: 16px;
+            flex: 0 0 16px;
+            fill: none;
+            stroke: currentColor;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-width: 1.8;
+        }
+
+        .custom-image-menu button:hover,
+        .custom-image-menu button:focus-visible {
+            background: rgba(242, 139, 155, 0.18);
+            color: #ffffff;
+            outline: none;
+        }
+
+        .custom-image-menu .menu-divider {
+            height: 1px;
+            margin: 6px 4px;
+            background: rgba(244, 180, 190, 0.22);
+        }
+
+        .custom-image-menu button[data-image-action="reload"] {
+            color: var(--primary);
+        }
+
+        .custom-image-menu.is-section-menu button[data-image-action="open"] {
+            display: none;
+        }
+
+        .map-zoom-layer {
+            position: relative;
+            width: 100%;
+            transform-origin: center center;
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .interactive-map.is-dragging .map-zoom-layer {
+            transition: none;
+        }
+
+        .map-zoom-layer > img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 20px;
+        }
+
+        .map-marker {
+            position: absolute;
+            width: clamp(24px, 2.5vw, 36px);
+            aspect-ratio: 1;
+            padding: 0;
+            border: 0;
+            border-radius: 50%;
+            background: transparent;
+            cursor: pointer;
+            transform: translate(-50%, -50%);
+            transition: transform 0.22s ease, filter 0.22s ease;
+            z-index: 3;
+        }
+
+        .map-marker img {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .map-marker-label {
+            position: absolute;
+            left: 50%;
+            bottom: calc(100% + 10px);
+            transform: translateX(-50%) translateY(6px);
+            opacity: 0;
+            pointer-events: none;
+            white-space: nowrap;
+            width: max-content;
+            max-width: min(220px, calc(100vw - 24px));
+            padding: 6px 10px;
+            border-radius: 10px;
+            background: rgba(9, 11, 14, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            color: #f3f4f6;
+            font-size: 9px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.3);
+            transition: opacity 0.18s ease, transform 0.18s ease;
+            z-index: 12;
+        }
+
+        .map-marker-edge-left .map-marker-label {
+            left: 0;
+            transform: translateY(6px);
+            bottom: calc(100% + 10px);
+        }
+
+        .map-marker:hover,
+        .map-marker:focus-visible {
+            z-index: 10;
+            transform: translate(-50%, -50%) scale(1.18);
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.72));
+            outline: none;
+        }
+
+        .map-marker:hover .map-marker-label,
+        .map-marker:focus-visible .map-marker-label {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .map-marker-edge-left:hover .map-marker-label,
+        .map-marker-edge-left:focus-visible .map-marker-label {
+            transform: translateY(0);
+        }
+
+        .map-frame img {
+            display: block;
+            width: 100%;
+            max-height: none;
+            object-fit: contain;
+            border-radius: 20px;
+        }
+
+        @keyframes pagePanelIn {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes topbarIn {
+            from { opacity: 0; transform: translateY(-18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes contentIn {
+            from { opacity: 0; transform: translateY(22px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes mapTitleIn {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes mapUnderlineIn {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes activeFillIn {
+            from { opacity: 0; transform: scaleX(0.35); transform-origin: left center; }
+            to { opacity: 1; transform: scaleX(1); transform-origin: left center; }
+        }
+
+        @keyframes iconLightSweep {
+            0% { left: -80%; opacity: 0; }
+            18% { opacity: 0.9; }
+            72% { opacity: 0.72; }
+            100% { left: 145%; opacity: 0; }
+        }
+
+        .rules-tools {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin: 0 0 18px;
+        }
+
+        .search-box {
+            min-width: 0;
+            border: 2px solid var(--line);
+            border-radius: 14px;
+            background: linear-gradient(105deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.045) 45%, rgba(242, 139, 155, 0.16) 50%, rgba(255, 255, 255, 0.045) 55%, rgba(255, 255, 255, 0.045) 100%);
+            background-size: 220% 100%;
+            background-position: 100% 0;
+            color: var(--text);
+            padding: 13px 16px;
+            font: inherit;
+            outline: none;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+        }
+
+        .search-box::placeholder { color: var(--muted); }
+
+        .search-box:focus,
+        .search-box:not(:placeholder-shown) {
+            border-color: var(--primary);
+            background-position: 0 0;
+            box-shadow: 0 0 0 4px rgba(242, 139, 155, 0.1), 0 10px 26px rgba(242, 139, 155, 0.12);
+        }
+
+        .filter-tabs {
+            position: relative;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 22px;
+        }
+
+        .filter-tabs::before {
+            content: "";
+            position: absolute;
+            z-index: 0;
+            left: var(--indicator-left, 0px);
+            top: var(--indicator-top, 0px);
+            width: var(--indicator-width, 0px);
+            height: var(--indicator-height, 0px);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(242, 139, 155, 0.9), rgba(217, 93, 114, 0.7));
+            box-shadow: 0 8px 22px rgba(242, 139, 155, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+            pointer-events: none;
+            transition: left 0.38s cubic-bezier(0.2, 0.8, 0.2, 1), top 0.38s cubic-bezier(0.2, 0.8, 0.2, 1), width 0.38s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.38s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .filter-tab {
+            position: relative;
+            z-index: 1;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            background: transparent;
+            color: var(--muted);
+            padding: 10px 14px;
+            font: inherit;
+            cursor: pointer;
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+
+        .filter-tab:hover {
+            color: var(--text);
+            transform: translateY(-2px);
+        }
+
+        .filter-tab.active {
+            color: var(--text);
+            transform: translateY(-2px);
+        }
+
+        .filter-tabs.has-indicator .filter-tab.active {
+            color: #2a0d13;
+        }
+
+        .empty-search {
+            display: none;
+            padding: 28px;
+            border: 2px dashed var(--line);
+            border-radius: 16px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(220px, 1fr));
+            gap: 18px;
+        }
+
+        .category-card {
+            position: relative;
+            background: linear-gradient(145deg, rgba(62, 27, 39, 0.96), rgba(29, 10, 16, 0.98));
+            border: 2px solid var(--line);
+            border-radius: 22px;
+            padding: 22px 18px 18px;
+            min-height: 240px;
+            box-shadow: 0 12px 26px rgba(24, 5, 10, 0.24), inset 0 1px 0 rgba(255, 225, 230, 0.08);
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+            cursor: pointer;
+            overflow: hidden;
+            animation: cardIn 0.65s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+            animation-delay: calc(var(--card-index, 0) * 70ms);
+        }
+
+        .category-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), transparent 82%);
+            opacity: 0.72;
+        }
+
+        .category-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(242, 139, 155, 0.46);
+            background: linear-gradient(145deg, rgba(78, 31, 46, 0.98), rgba(37, 12, 20, 0.99));
+            box-shadow: 0 20px 34px rgba(24, 5, 10, 0.42), 0 0 0 1px rgba(242, 139, 155, 0.08);
+        }
+
+        .category-card:focus-visible {
+            outline: 3px solid rgba(242, 139, 155, 0.72);
+            outline-offset: 4px;
+        }
+
+        .category-card::after {
+            content: "";
+            position: absolute;
+            z-index: 0;
+            inset: auto -40px -40px auto;
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(242, 139, 155, 0.18), transparent 60%);
+        }
+
+        .category-icon {
+            position: relative;
+            width: 52px;
+            height: 52px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            margin-bottom: 18px;
+            background: linear-gradient(135deg, rgba(242, 139, 155, 0.18), rgba(217, 93, 114, 0.14));
+            border: 1px solid rgba(242, 139, 155, 0.28);
+            font-size: 1.35rem;
+            color: var(--primary);
+            z-index: 1;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(242, 139, 155, 0.12);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .category-icon::after {
+            content: "";
+            position: absolute;
+            inset: -45% auto -45% -80%;
+            width: 42%;
+            background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.72), transparent);
+            transform: skewX(-18deg);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .category-card:hover .category-icon::after {
+            animation: iconLightSweep 0.85s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+        }
+
+        .category-card:hover .category-icon {
+            transform: translateY(-2px) rotate(-3deg);
+            box-shadow: 0 12px 24px rgba(242, 139, 155, 0.22);
+        }
+
+        .category-name {
+            position: relative;
+            z-index: 1;
+            margin: 0 0 8px;
+            font-size: 1.05rem;
+            font-family: 'LogoSCUnboundedSans-Regular';
+            font-weight: 400;
+            letter-spacing: -0.02em;
+        }
+
+        .category-desc {
+            position: relative;
+            z-index: 1;
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.6;
+            font-size: 0.83rem;
+            font-weight: 800;
+        }
+
+        .category-meta {
+            position: relative;
+            z-index: 1;
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            color: var(--muted);
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-family: 'LogoSCUnboundedSans-Regular';
+            font-weight: 400;
+        }
+
+        .punishment-label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 0.62rem;
+            opacity: 0.78;
+        }
+
+        .category-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+            font-weight: 800;
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            background: rgba(24, 5, 10, 0.76);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 100;
+            padding: 24px;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal.open {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .modal.is-closing {
+            opacity: 0;
+            visibility: visible;
+            pointer-events: none;
+        }
+
+        .modal-panel {
+            width: min(1040px, 100%);
+            max-height: 86vh;
+            overflow: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            background: linear-gradient(180deg, rgba(48,20,29,0.98), rgba(25,8,14,0.99));
+            border: 1px solid var(--line);
+            border-radius: 28px;
+            box-shadow: var(--shadow);
+            position: relative;
+            transform: translateY(18px) scale(0.96);
+            opacity: 0;
+        }
+
+        .modal.open .modal-panel {
+            animation: modalIn 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        .modal.is-closing .modal-panel {
+            animation: modalOut 0.28s ease forwards;
+        }
+
+        .modal-panel::-webkit-scrollbar {
+            display: none;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: translateY(18px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes modalOut {
+            from { opacity: 1; transform: translateY(0) scale(1); }
+            to { opacity: 0; transform: translateY(12px) scale(0.97); }
+        }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(18px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes ruleIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        .close-btn {
+            position: sticky;
+            top: 14px;
+            left: 100%;
+            width: 42px;
+            height: 42px;
+            margin: 12px 12px 0 auto;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+            border: 2px solid var(--line);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .close-btn i {
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), color 0.25s ease;
+        }
+
+        .close-btn:hover {
+            transform: rotate(90deg) scale(1.12);
+            background: rgba(242, 139, 155, 0.18);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 6px rgba(242, 139, 155, 0.08), 0 12px 28px rgba(242, 139, 155, 0.24);
+        }
+
+        .close-btn:hover i {
+            transform: rotate(90deg) scale(1.15);
+            color: #ffe0e5;
+        }
+
+        .modal-content {
+            padding: 0 32px 32px;
+        }
+
+        .copy-rule-link {
+            position: absolute;
+            top: 18px;
+            left: 28px;
+            width: 42px;
+            height: 42px;
+            margin: 0;
+            display: grid;
+            place-items: center;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            color: #ffffff;
+            cursor: pointer;
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .copy-rule-link:hover {
+            background: transparent;
+            transform: translateY(-2px);
+        }
+
+        .copy-rule-link:focus-visible {
+            outline: 2px solid #ffffff;
+            outline-offset: 3px;
+        }
+
+        .copy-rule-link svg {
+            width: 25px;
+            height: 25px;
+            fill: none;
+            stroke: currentColor;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-width: 1.8;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            border-bottom: 1px solid var(--line);
+            padding: 0 0 18px;
+            margin-bottom: 20px;
+        }
+
+        .modal-header .icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, rgba(242, 139, 155, 0.2), rgba(217, 93, 114, 0.2));
+            border: 1px solid rgba(242, 139, 155, 0.3);
+            font-size: 1.7rem;
+            color: var(--primary);
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: clamp(1.5rem, 2vw, 2.4rem);
+            letter-spacing: -0.04em;
+        }
+
+        .modal-header p {
+            margin: 6px 0 0;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .rules-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .rule-item {
+            position: relative;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 14px;
+            align-items: start;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.018));
+            border: 1px solid rgba(244, 180, 190, 0.3);
+            border-radius: 18px;
+            padding: 20px 22px;
+            min-height: 104px;
+            overflow: hidden;
+            transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+            animation: ruleIn 0.45s ease both;
+            animation-delay: calc(var(--rule-index, 0) * 65ms);
+        }
+
+        .rule-item::before {
+            content: "";
+            position: absolute;
+            inset: 0 auto 0 0;
+            width: 4px;
+            background: linear-gradient(180deg, var(--primary), var(--primary-2));
+        }
+
+        .rule-item::after {
+            content: "";
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            right: -58px;
+            bottom: -80px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(242, 139, 155, 0.16), transparent 68%);
+            pointer-events: none;
+        }
+
+        .rule-item:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(135deg, rgba(242, 139, 155, 0.1), rgba(255, 255, 255, 0.025));
+            border-color: rgba(242, 139, 155, 0.62);
+        }
+
+        .rule-item.rule-wide {
+            grid-column: span 1;
+        }
+
+        .rule-item.rule-medium {
+            grid-column: span 1;
+        }
+
+        .rule-item.rule-short {
+            grid-column: span 1;
+        }
+
+        .rule-main {
+            line-height: 1.55;
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+
+        .rule-title {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 800;
+            line-height: 1.45;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .rule-desc {
+            margin: 7px 0 0;
+            color: var(--muted);
+            font-size: 0.83rem;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .punishment {
+            align-self: center;
+            justify-self: stretch;
+            grid-column: 1;
+            min-width: 0;
+            max-width: 100%;
+            padding: 12px 14px;
+            border-radius: 13px;
+            font-size: 0.72rem;
+            font-family: 'LogoSCUnboundedSans-Regular';
+            font-weight: 400;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            white-space: normal;
+            overflow-wrap: anywhere;
+            line-height: 1.45;
+        }
+
+        .punish-warning {
+            background: rgba(248, 113, 113, 0.1);
+            color: #fecaca;
+            border: 2px solid rgba(248, 113, 113, 0.42);
+        }
+
+        .punish-regular {
+            background: rgba(251, 191, 36, 0.12);
+            color: #fcd34d;
+            border: 2px solid rgba(251, 191, 36, 0.42);
+        }
+
+        .punish-jail {
+            background: rgba(148, 163, 184, 0.14);
+            color: #d1d5db;
+            border: 2px solid rgba(148, 163, 184, 0.44);
+        }
+
+        footer {
+            padding: 30px 0 44px;
+            color: var(--muted);
+            font-size: 0.82rem;
+        }
+
+        .footer-inner {
+            border-top: 1px solid var(--line);
+            padding-top: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 980px) {
+            .hero-box {
+                grid-template-columns: 1fr;
+            }
+            .categories {
+                grid-template-columns: repeat(2, minmax(220px, 1fr));
+            }
+            .rules-list {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            .rule-item.rule-wide {
+                grid-column: span 1;
+            }
+            .rule-item.rule-medium {
+                grid-column: span 1;
+            }
+            .rule-item.rule-short {
+                grid-column: span 1;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .mayor-panel {
+                width: 100%;
+                margin-left: 0;
+                padding-right: 16px;
+                padding-left: 16px;
+            }
+
+            .mayor-header {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                padding: 22px 20px;
+            }
+
+            .mayor-header-icon {
+                width: 58px;
+                height: 58px;
+                border-radius: 18px;
+                font-size: 1.45rem;
+            }
+
+            .topbar-inner {
+                height: auto;
+                padding: 18px 0;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .nav {
+                width: 100%;
+            }
+            .nav a, .nav button {
+                flex: 1;
+                text-align: center;
+            }
+            .categories {
+                grid-template-columns: 1fr;
+            }
+            .mayor-list {
+                grid-template-columns: 1fr;
+            }
+            .mayor-overview {
+                grid-template-columns: 1fr;
+            }
+            .rule-item {
+                grid-template-columns: 1fr;
+            }
+            .rules-list {
+                grid-template-columns: 1fr;
+            }
+            .rules-list .rule-item,
+            .rules-list .rule-item.rule-wide,
+            .rules-list .rule-item.rule-medium,
+            .rules-list .rule-item.rule-short {
+                grid-column: 1;
+                grid-template-columns: 1fr;
+            }
+            .section-head {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .status-board {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        body,
+        body * {
+            font-weight: 400;
+        }
+
+        body .fa,
+        body .fa-solid,
+        body .fa-brands,
+        body [class^="fa-"] {
+            font-weight: 900 !important;
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="container topbar-inner">
+            <div class="brand">
+                <div class="brand-mark"><i class="fa-solid fa-shield-halved"></i></div>
+                <span>VolynRP</span>
+            </div>
+            <nav class="nav page-tabs" aria-label="Розділи сайту">
+                <button class="page-tab active" type="button" data-page="rules"><i class="fa-solid fa-scale-balanced"></i> Правила</button>
+                <button class="page-tab" type="button" data-page="mayor"><i class="fa-solid fa-landmark"></i> Правила для мерів</button>
+                <button class="page-tab" type="button" data-page="map"><i class="fa-solid fa-map"></i> Мапа</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="rules page-panel" id="rulesPanel" data-panel="rules">
+            <div class="section-head">
+                <h2>Правила сервера</h2>
+                <p>Оберіть категорію, щоб переглянути порушення та відповідні покарання.</p>
+            </div>
+            <div class="rules-tools">
+                <input class="search-box" id="rulesSearch" type="search" placeholder="Пошук правила, бану або штрафу..." aria-label="Пошук правил">
+            </div>
+            <div class="filter-tabs" id="filterTabs" role="group" aria-label="Фільтр покарань">
+                <button class="filter-tab active" type="button" data-filter="all">Усі</button>
+                <button class="filter-tab" type="button" data-filter="ban">Бани</button>
+                <button class="filter-tab" type="button" data-filter="severe">Тяжкі</button>
+                <button class="filter-tab" type="button" data-filter="fine">Штрафи</button>
+            </div>
+            <div class="categories" id="categoriesGrid"></div>
+            <div class="empty-search" id="emptySearch">Нічого не знайдено. Спробуйте інший запит або фільтр.</div>
+        </section>
+
+        <section class="mayor-panel page-panel is-hidden" id="mayorPanel" data-panel="mayor">
+            <div class="mayor-header">
+                <div class="mayor-header-icon" aria-hidden="true"><i class="fa-solid fa-landmark"></i></div>
+                <div class="mayor-header-copy">
+                    <span class="mayor-kicker">Кандидатам і чинним мерам</span>
+                    <h2>Правила для мерів</h2>
+                    <p>Основні вимоги до кандидатів на посаду мера та відповідальної роботи на посаді.</p>
+                </div>
+            </div>
+            <div class="mayor-overview">
+                <div class="mayor-stat"><strong>5</strong><span>обов’язкових вимог</span></div>
+                <div class="mayor-stat"><strong>14+</strong><span>мінімальний вік кандидата</span></div>
+                <div class="mayor-stat"><strong>50%</strong><span>мінімум правил, які потрібно знати</span></div>
+            </div>
+            <div class="mayor-list">
+                <div class="mayor-rule"><span class="mayor-number">01</span><span class="mayor-rule-text">Кандидату має виповнитися щонайменше 14 років.</span></div>
+                <div class="mayor-rule"><span class="mayor-number">02</span><span class="mayor-rule-text">Кандидат повинен представляти опозицію до попередніх мерів.</span></div>
+                <div class="mayor-rule"><span class="mayor-number">03</span><span class="mayor-rule-text">Потрібно провести на сервері понад один місяць і мати досвід перебування хоча б в одній фракції.</span></div>
+                <div class="mayor-rule"><span class="mayor-number">04</span><span class="mayor-rule-text">Дотримуватися адекватної поведінки та відповідально виконувати обов’язки мера.</span></div>
+                <div class="mayor-rule"><span class="mayor-number">05</span><span class="mayor-rule-text">Знати щонайменше 50% правил сервера.</span></div>
+            </div>
+        </section>
+
+        <section class="map-panel page-panel is-hidden" id="mapPanel" data-panel="map">
+            <div class="map-header">
+                <h2>Мапа</h2>
+                <p>Карта зон і важливих місць VolynRP.</p>
+            </div>
+            <div class="map-main-legend" aria-label="Легенда карти">
+                <div class="legend-item"><span class="legend-icon radar" aria-hidden="true"></span><span>Зони, де дозволено радари</span></div>
+                <div class="legend-item"><span class="legend-icon signal" aria-hidden="true"></span><span>Зелені зони (ЗЗ)</span></div>
+                <div class="legend-item"><span class="legend-icon marker" aria-hidden="true"></span><span>Контрольно-пропускні пункти (КПП)</span></div>
+                <div class="legend-item"><span class="legend-icon pin" aria-hidden="true"></span><span>Місця проведення розіграшів</span></div>
+            </div>
+            <div class="map-frame">
+                <div class="interactive-map">
+                    <div class="map-zoom-layer">
+                        <img src="image_247891.png" alt="Карта зон VolynRP">
+                        <button class="map-marker map-marker-gavel" type="button" style="left: 89%; bottom: 17.6%;" aria-label="Суд">
+                            <img src="Group%20222.png" alt="Суд">
+                            <span class="map-marker-label">НПУ</span>
+                        </button>
+                        <button class="map-marker map-marker-bank" type="button" style="left: 36.1%; top: 61.3%;" aria-label="Банк">
+                            <img src="Group%20223.png" alt="Банк">
+                            <span class="map-marker-label">Готель</span>
+                        </button>
+                        <button class="map-marker map-marker-shield" type="button" style="left: 45.7%; bottom: 14.4%;" aria-label="Поліція">
+                            <img src="Group%20224.png" alt="Поліція">
+                            <span class="map-marker-label">Мерія</span>
+                        </button>
+                        <button class="map-marker map-marker-medal" type="button" style="left: 5.9%; bottom: 40.7%;" aria-label="Державна служба">
+                            <img src="Group%20235.png" alt="Державна служба">
+                            <span class="map-marker-label">ДБР</span>
+                        </button>
+                        <button class="map-marker" type="button" style="right: 67%; top: 27.8%;" aria-label="Дополнительный маркер 1">
+                            <img src="image%2022.png" alt="Дополнительный маркер 1">
+                            <span class="map-marker-label">СБУ</span>
+                        </button>
+                        <button class="map-marker map-marker-edge-left" type="button" style="right: 91%; top: 67%;" aria-label="Дополнительный маркер 2">
+                            <img src="Frame%2060.png" alt="Дополнительный маркер 2">
+                            <span class="map-marker-label">Клан White or White</span>
+                        </button>
+                        <button class="map-marker" type="button" style="right: 7%; bottom: 23%;" aria-label="Дополнительный маркер 3">
+                            <img src="Frame%2059.png" alt="Дополнительный маркер 3">
+                            <span class="map-marker-label">Суд</span>
+                        </button>
+                    </div>
+                    <div class="map-controls" aria-label="Керування масштабом карти">
+                        <button class="map-control" type="button" data-map-zoom="in" aria-label="Збільшити карту">+</button>
+                        <button class="map-control" type="button" data-map-zoom="out" aria-label="Зменшити карту">−</button>
+                        <button class="map-control" type="button" data-map-zoom="reset" aria-label="Повернути нормальний масштаб" title="Повернути нормальний масштаб"></button>
+                    </div>
+                </div>
+            </div>
+            <h3 class="map-mode-title">Село і Місто</h3>
+            <div class="map-frame">
+                <img src="Group%20225.png" alt="Додаткова карта VolynRP">
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-inner">
+            <span>© <span id="year"></span> VolynRP. Усі права захищено.</span>
+            <span>Правила актуальні для всіх гравців і адміністрації.</span>
+        </div>
+    </footer>
+
+    <div class="modal" id="rulesModal" aria-modal="true" role="dialog">
+        <div class="modal-panel">
+            <div class="close-btn" onclick="closeModal()" aria-label="Закрити">
+                <i class="fa-solid fa-xmark"></i>
+            </div>
+            <div class="modal-content" id="modalContent"></div>
+        </div>
+    </div>
+
+    <div class="custom-image-menu" id="customImageMenu" role="menu">
+        <button type="button" data-image-action="open">
+            <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6"></path><path d="M20 4 10 14"></path><path d="M20 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h4"></path></svg>
+            <span>Відкрити зображення</span>
+        </button>
+        <button type="button" data-image-action="copy-link">
+            <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l2-2a5 5 0 0 0-7.07-7.07l-1.14 1.14"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-2 2a5 5 0 0 0 7.07 7.07l1.14-1.14"></path></svg>
+            <span>Копіювати посилання</span>
+        </button>
+        <div class="menu-divider" role="separator"></div>
+        <button type="button" data-image-action="reload">
+            <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8.1 8.1 0 0 0-14.8-3L3 11"></path><path d="M3 4v7h7"></path><path d="M4 13a8.1 8.1 0 0 0 14.8 3L21 13"></path><path d="M21 20v-7h-7"></path></svg>
+            <span>Оновити сторінку</span>
+        </button>
+    </div>
+
+    <script>
+        const categories = [
+            {
+                name: '1. ПДР',
+                icon: 'fa-solid fa-car-side',
+                description: 'Правила дорожнього руху та поведінка на дорогах.',
+                rules: [
+                    { title: '1.0 Їзда зустрічною смугою', desc: '', punish: 'Штраф 5000€' },
+                    { title: '1.1 Проїзд на червоне світло', desc: '', punish: 'Автоматичний штраф 100€' },
+                    { title: '1.2 Вимкнені фари в темну пору доби', desc: '', punish: 'Штраф 2000€' },
+                    { title: '1.3 Неправильне паркування', desc: '', punish: 'Штраф 3000€' },
+                    { title: '1.4 Невикористання покажчиків повороту', desc: '', punish: 'Штраф 2500€' },
+                    { title: '1.5 Необережна їзда', desc: '', punish: 'Штраф 4500€' },
+                    { title: '1.6 Втеча з місця ДТП', desc: '', punish: 'Попередження або штраф 3500€' },
+                    { title: '1.7 Обгін автомобіля', desc: '', punish: 'Штраф 1500€' },
+                    { title: '1.8 Використання проблискових маячків без потреби', desc: '', punish: 'Штраф 1000€' },
+                    { title: '1.9 Сільськогосподарський транспорт у місті', desc: '', punish: 'Штраф 7000€' },
+                    { title: '1.10 Переслідування поліцією', desc: '', punish: 'КПЗ або штраф 8000€' },
+                    { title: '1.11 Перевищення швидкості понад 150 км/год', desc: '', punish: 'Штраф 3500€' },
+                    { title: '1.12 Підрізання автомобіля', desc: '', punish: 'Штраф 8000€' }
+                ]
+            },
+            {
+                name: '2. Зброя',
+                icon: 'fa-solid fa-gun',
+                description: 'Використання, носіння та передача зброї.',
+                rules: [
+                    { title: '2.0 Відкрите носіння зброї', desc: '', punish: 'Штраф 3000€' },
+                    { title: '2.1 Використання зброї без ліцензії', desc: '', punish: 'Штраф 5000€ і конфіскація' },
+                    { title: '2.2 Використання зброї без причини', desc: '', punish: 'Штраф 8000€ або бан 1 день' },
+                    { title: '2.3 Передавання зброї іншим особам', desc: '', punish: 'Штраф 2500€' },
+                    { title: '2.4 Використання зброї в місті без підстав', desc: '', punish: 'Штраф 8000€' }
+                ]
+            },
+            {
+                name: '3. Голосовий чат',
+                icon: 'fa-solid fa-volume-high',
+                description: 'Поведінка в голосовому каналі та якість чату.',
+                rules: [
+                    { title: '3.0 Гучна музика, сторонні звуки', desc: '', punish: 'Штраф 4000€' },
+                    { title: '3.1 Російська музика', desc: '', punish: 'Бан 3 дні' },
+                    { title: '3.2 Перебивання', desc: '', punish: 'Штраф 3500€' },
+                    { title: '3.3 Сексуальні звуки', desc: '', punish: 'Попередження або штраф 7000€' },
+                    { title: '3.4 Російська пропаганда', desc: '', punish: 'Бан назавжди' }
+                ]
+            },
+            {
+                name: '4. Напад',
+                icon: 'fa-solid fa-skull-crossbones',
+                description: 'Правила боїв, атак та нападу на гравців.',
+                rules: [
+                    { title: '4.0 VDM', desc: '', punish: 'Штраф 6000€ або бан 2 дні' },
+                    { title: '4.1 RDM', desc: '', punish: 'Штраф 5000€ або бан 2 дні' },
+                    { title: '4.2 RK', desc: '', punish: 'Штраф 4000€ або бан 1 день' },
+                    { title: '4.3 DM від 3 ударів', desc: '', punish: 'Штраф 3000€' },
+                    { title: '4.4 Убивство', desc: '', punish: 'Штраф 8000€ або КПЗ' }
+                ]
+            },
+            {
+                name: '5. NRP-поведінка',
+                icon: 'fa-solid fa-brain',
+                description: 'Реалістична рольова поведінка та логічні дії.',
+                rules: [
+                    { title: '5.0 Power Gaming', desc: '', punish: 'Попередження або бан 2 дні' },
+                    { title: '5.1 Meta Gaming', desc: '', punish: 'Бан 2 дні' },
+                    { title: '5.2 Fail RP', desc: '', punish: 'Бан 1 день' },
+                    { title: '5.3 CopBaiting', desc: '', punish: 'Штраф 4000€ або попередження' },
+                    { title: '5.4 Убивство AFK-персонажа', desc: '', punish: 'Штраф 8000€' },
+                    { title: '5.5 Відсутність Fear RP', desc: '', punish: 'Попередження або бан 1 день' },
+                    { title: '5.6 Combat Logging', desc: '', punish: 'Попередження або бан 3 дні' },
+                    { title: '5.7 Перешкоджання офіцеру під час затримання/погоні та його вбивство', desc: '', punish: 'Бан 3 дні' },
+                    { title: '5.8 Їзда зі злочинцем на поліцейському автомобілі', desc: '', punish: 'Бан 16 днів для співучасників і поліцейського' }
+                ]
+            },
+            {
+                name: '6. Пограбування',
+                icon: 'fa-solid fa-hand-holding-dollar',
+                description: 'Роботи, банди та сценарії пограбувань.',
+                rules: [
+                    { title: '6.0 Пограбування заправки', desc: '', punish: 'Штраф 3500€' },
+                    { title: '6.1 Пограбування магазину', desc: '', punish: 'Штраф 5000€' },
+                    { title: '6.2 Пограбування ювелірного магазину', desc: '', punish: 'Штраф на розсуд судді та конфіскація' },
+                    { title: '6.3 Пограбування банку', desc: '', punish: 'КПЗ або штраф 8000€ і конфіскація' },
+                    { title: '6.4 Пограбування торгового автомата', desc: '', punish: 'Штраф 1500€' },
+                    { title: '6.5 Пограбування контейнера', desc: '', punish: 'Штраф 6000€ і конфіскація' },
+                    { title: '6.6 Пограбування клубу', desc: '', punish: 'Штраф 6000€ і КПЗ' }
+                ]
+            },
+            {
+                name: '7. NRP-поліція',
+                icon: 'fa-solid fa-user-shield',
+                description: 'Реалістичні дії поліції та затриманих.',
+                rules: [
+                    { title: '7.0 NRP-каф без причини', desc: '', punish: 'Штраф 7000€ або бан 1 день' },
+                    { title: '7.1 XP без дозволу гравця', desc: '', punish: 'Попередження або штраф 2000€' },
+                    { title: '7.2 Перевірка бази даних на розшук', desc: '', punish: 'Попередження або штраф 3000€' },
+                    { title: '7.3 Каф заради помсти/тролінгу/булінгу', desc: '', punish: 'Бан 3 дні' },
+                    { title: '7.4 Використання тазера без причини', desc: '', punish: 'Штраф 8000€ або бан 2 дні' },
+                    { title: '7.5 Застосування сили без потреби', desc: '', punish: 'Штраф на розсуд адміністрації' },
+                    { title: '7.6 Відходити від поліції далі ніж на 5 метрів', desc: '', punish: 'Попередження' },
+                    { title: '7.7 Везення до КПЗ без суду', desc: '', punish: 'Бан 2 дні' }
+                ]
+            },
+            {
+                name: '8. Булінг',
+                icon: 'fa-solid fa-comments',
+                description: 'Уразливі висловлювання, цькування та образи.',
+                rules: [
+                    { title: '8.0 Булінг, сексуальний контент тощо', desc: '', punish: 'Штраф 6000€' },
+                    { title: '8.1 Булінг родичів', desc: '', punish: 'Бан 14 днів' }
+                ]
+            },
+            {
+                name: '9. Суд',
+                icon: 'fa-solid fa-gavel',
+                description: 'Поважне ставлення до судової системи.',
+                rules: [
+                    { title: '9.0 Перебивання судді/адвоката/прокурора', desc: '', punish: 'Штраф 6500€' },
+                    { title: '9.1 Ігнорування рішення суду', desc: '', punish: 'Бан 1 день або штраф 5000€' },
+                    { title: '9.2 Приховування друзів або знайомих', desc: '', punish: 'Бан 2 дні' },
+                    { title: '9.3 Перешкоджання суду', desc: '', punish: 'Бан 2 дні або штраф 5000€' },
+                    { title: '9.4 Тиск на суддю/адвоката/прокурора', desc: '', punish: 'Штраф 2000€' },
+                    { title: '9.5 Неповага до судді', desc: '', punish: 'Штраф 3000€' }
+                ]
+            },
+            {
+                name: '10. Реклама',
+                icon: 'fa-solid fa-bullhorn',
+                description: 'Заборонена реклама, спам і провокації.',
+                rules: [
+                    { title: '10.0 Реклама, спам, провокування', desc: '', punish: 'Бан назавжди' }
+                ]
+            },
+            {
+                name: '11. Чити',
+                icon: 'fa-solid fa-shield-halved',
+                description: 'Даунхак, читерство та шахрайські інструменти.',
+                rules: [
+                    { title: '11.0 Чити, використання багів тощо', desc: '', punish: 'Бан назавжди' }
+                ]
+            },
+            {
+                name: '12. Bunnyhop',
+                icon: 'fa-solid fa-person-running',
+                description: 'Заборонений bunnyhop і стрибкові техніки.',
+                rules: [
+                    { title: '12.0 Bhop', desc: '', punish: 'Попередження. Повторний випадок — бан 3 дні' }
+                ]
+            },
+            {
+                name: '13. Процесуальні дії',
+                icon: 'fa-solid fa-video',
+                description: 'Відеофіксація, представлення та міркування.',
+                rules: [
+                    { title: '13.0 Відсутність відеофіксації порушення та затримання', desc: '', punish: 'Штраф 3000€' },
+                    { title: '13.1 Непредставлення (звання, ім’я, посада)', desc: '', punish: 'Бан 1 день або штраф 4000€' },
+                    { title: '13.2 Неповідомлення прав Міранди', desc: '', punish: 'Штраф 4500€' }
+                ]
+            },
+            {
+                name: '14. Уникнення покарання',
+                icon: 'fa-solid fa-ban',
+                description: 'Навмисне ухилення від санкцій та бану.',
+                rules: [
+                    { title: '14.0 Уникнення покарання, штрафу, бану', desc: '', punish: 'Бан 4 дні або назавжди' },
+                    { title: '14.1 Вихід під час RP', desc: '', punish: 'Бан 1 день' }
+                ]
+            },
+            {
+                name: '15. Проникнення на територію',
+                icon: 'fa-solid fa-house-crack',
+                description: 'Своя та чужа територія без логічних підстав.',
+                rules: [
+                    { title: '15.0 Проникнення на чужу територію', desc: '', punish: 'Бан 1 день або штраф 3000€' },
+                    { title: '15.1 Привласнення чужої території', desc: '', punish: 'Бан 3 дні' }
+                ]
+            },
+            {
+                name: '16. Державні служби',
+                icon: 'fa-solid fa-ambulance',
+                description: 'Поведінка щодо державних служб та медиків.',
+                rules: [
+                    { title: '16.0 Не пропустив швидку допомогу на виклик', desc: '', punish: 'Штраф 8000€' },
+                    { title: '16.1 Убив державного працівника', desc: '', punish: 'КПЗ' },
+                    { title: '16.2 Зламав автомобіль державного працівника', desc: '', punish: 'Компенсація на розсуд держпрацівника' },
+                    { title: '16.3 Приховування злочину', desc: '', punish: 'Бан 4 дні' }
+                ]
+            },
+            {
+                name: '17. Зелені зони',
+                icon: 'fa-solid fa-tree',
+                description: 'Заборона бойових дій і стрілянини в спецзонах.',
+                rules: [
+                    { title: '17.0 Заборонені бійки', desc: '', punish: 'Штраф 5000€ або бан 1 день' },
+                    { title: '17.1 Заборонена стрілянина', desc: '', punish: 'Бан 3 дні' },
+                    { title: '17.2 Маска, броня, жилет', desc: '', punish: 'Штраф 4000€' }
+                ]
+            },
+            {
+                name: '18. Відмички',
+                icon: 'fa-solid fa-key',
+                description: 'Правила використання відмичок та зняття наручників.',
+                rules: [
+                    { title: '18.0 Відмичка без рп отигрування', desc: '', punish: 'Штраф 5000€ або бан 1 день' },
+                    { title: '18.1 Зняття наручників відмичкою в зеленій зоні', desc: '', punish: 'Бан 2 дні' },
+                    { title: '18.2 Зняття наручників відмичкою біля вбитого поліцейскього', desc: '', punish: 'Попередження>Бан 1 день' },
+                    { title: '18.3 Відмичка коли преступник в машині', desc: '', punish: 'Попередження>Бан 1 день' }
+                ]
+            }
+        ];
+
+        const categoriesGrid = document.getElementById('categoriesGrid');
+        const modal = document.getElementById('rulesModal');
+        const modalContent = document.getElementById('modalContent');
+        const rulesSearch = document.getElementById('rulesSearch');
+        const filterTabs = document.getElementById('filterTabs');
+        const emptySearch = document.getElementById('emptySearch');
+        const customImageMenu = document.getElementById('customImageMenu');
+        let activeImage;
+        let activeSectionId = 'mapPanel';
+        let imageMenuCloseTimer;
+        let closeMenuTimer;
+        let closeTimer;
+        let activeFilter = 'all';
+        let activePage = 'rules';
+        const interactiveMap = document.querySelector('.interactive-map');
+        const mapZoomLayer = document.querySelector('.map-zoom-layer');
+        let mapScale = 1;
+        let mapOffsetX = 0;
+        let mapOffsetY = 0;
+        let isMapDragging = false;
+        let dragStartX = 0;
+        let dragStartY = 0;
+
+        function closeImageMenu() {
+            if (!customImageMenu) return;
+            clearTimeout(imageMenuCloseTimer);
+            clearTimeout(closeMenuTimer);
+            if (customImageMenu.classList.contains('is-closing')) return;
+            customImageMenu.classList.remove('is-open');
+            customImageMenu.classList.add('is-closing');
+            activeImage = null;
+            activeSectionId = 'mapPanel';
+            closeMenuTimer = setTimeout(() => {
+                customImageMenu.classList.remove('is-closing');
+                customImageMenu.classList.remove('is-section-menu');
+                customImageMenu.style.left = '';
+                customImageMenu.style.top = '';
+            }, 180);
+        }
+
+        document.addEventListener('contextmenu', event => {
+            event.preventDefault();
+        }, true);
+
+        document.addEventListener('contextmenu', event => {
+            if (!customImageMenu) return;
+            const target = event.target && typeof event.target.closest === 'function' ? event.target : document.body;
+            const image = target.closest('.map-frame img');
+            const validImage = image && image.closest('.map-frame') && !image.closest('.map-marker');
+            const activeSection = target.closest('.page-panel[data-panel="map"], .page-panel[data-panel="mayor"]')
+                || document.querySelector('.page-panel[data-panel="map"]:not(.is-hidden), .page-panel[data-panel="mayor"]:not(.is-hidden)');
+
+            if (!activeSection) return;
+            if (image && !validImage) return;
+
+            event.preventDefault();
+            clearTimeout(closeMenuTimer);
+            customImageMenu.classList.remove('is-closing');
+            customImageMenu.classList.remove('is-open');
+            customImageMenu.classList.add('is-open');
+            activeImage = validImage ? image : null;
+            activeSectionId = activeSection.id || 'mapPanel';
+            customImageMenu.classList.toggle('is-section-menu', !activeImage);
+            const menuWidth = 220;
+            const menuHeight = 150;
+            customImageMenu.style.left = `${Math.min(event.clientX, window.innerWidth - menuWidth - 8)}px`;
+            customImageMenu.style.top = `${Math.min(event.clientY, window.innerHeight - menuHeight - 8)}px`;
+        });
+
+        customImageMenu?.addEventListener('click', event => {
+            const target = event.target && typeof event.target.closest === 'function' ? event.target : null;
+            if (!target) return;
+            const action = target.closest('[data-image-action]')?.dataset.imageAction;
+            if (!action || (action === 'open' && !activeImage)) return;
+            if (action === 'open') window.open(activeImage.currentSrc || activeImage.src, '_blank', 'noopener');
+            if (action === 'copy-link') {
+                const sectionUrl = new URL(window.location.href);
+                sectionUrl.hash = activeSectionId;
+                navigator.clipboard?.writeText(sectionUrl.href);
+            }
+            if (action === 'reload') window.location.reload();
+            closeImageMenu();
+        });
+
+        document.addEventListener('pointerdown', event => {
+            const target = event.target && typeof event.target.closest === 'function' ? event.target : null;
+            if (!target || event.button !== 0) return;
+            if (!target.closest('#customImageMenu') && customImageMenu?.classList.contains('is-open')) {
+                closeImageMenu();
+            }
+        });
+
+        window.addEventListener('resize', closeImageMenu);
+        window.addEventListener('scroll', closeImageMenu, true);
+
+        function updateMapTransform() {
+            if (!mapZoomLayer) return;
+            const maxOffsetX = mapZoomLayer.offsetWidth * (mapScale - 1) / 2;
+            const maxOffsetY = mapZoomLayer.offsetHeight * (mapScale - 1) / 2;
+            mapOffsetX = Math.min(maxOffsetX, Math.max(-maxOffsetX, mapOffsetX));
+            mapOffsetY = Math.min(maxOffsetY, Math.max(-maxOffsetY, mapOffsetY));
+            mapZoomLayer.style.transform = `translate(${mapOffsetX}px, ${mapOffsetY}px) scale(${mapScale})`;
+        }
+
+        function changeMapScale(amount) {
+            mapScale = Math.min(4, Math.max(1, mapScale + amount));
+            if (mapScale === 1) {
+                mapOffsetX = 0;
+                mapOffsetY = 0;
+            }
+            updateMapTransform();
+        }
+
+        document.querySelectorAll('[data-map-zoom]').forEach(button => {
+            button.addEventListener('click', () => {
+                const action = button.dataset.mapZoom;
+                if (action === 'in') changeMapScale(0.25);
+                if (action === 'out') changeMapScale(-0.25);
+                if (action === 'reset') {
+                    mapScale = 1;
+                    mapOffsetX = 0;
+                    mapOffsetY = 0;
+                    updateMapTransform();
+                }
+            });
+        });
+
+        interactiveMap?.addEventListener('wheel', event => {
+            event.preventDefault();
+            changeMapScale(event.deltaY < 0 ? 0.15 : -0.15);
+        }, { passive: false });
+
+        interactiveMap?.addEventListener('pointerdown', event => {
+            if (event.button !== 0 || event.target.closest('.map-control, .map-marker') || mapScale === 1) return;
+            event.preventDefault();
+            isMapDragging = true;
+            dragStartX = event.clientX - mapOffsetX;
+            dragStartY = event.clientY - mapOffsetY;
+            interactiveMap.classList.add('is-dragging');
+            interactiveMap.setPointerCapture(event.pointerId);
+        });
+
+        interactiveMap?.addEventListener('pointermove', event => {
+            if (!isMapDragging) return;
+            mapOffsetX = event.clientX - dragStartX;
+            mapOffsetY = event.clientY - dragStartY;
+            updateMapTransform();
+        });
+
+        interactiveMap?.addEventListener('pointerup', event => {
+            isMapDragging = false;
+            interactiveMap.classList.remove('is-dragging');
+            interactiveMap.releasePointerCapture(event.pointerId);
+        });
+
+        interactiveMap?.addEventListener('pointercancel', () => {
+            isMapDragging = false;
+            interactiveMap.classList.remove('is-dragging');
+        });
+
+        function movePageIndicator() {
+            const pageTabs = document.querySelector('.page-tabs');
+            const activeTab = pageTabs?.querySelector('.page-tab.active');
+            if (!pageTabs || !activeTab) return;
+            if (!activeTab.offsetWidth || !activeTab.offsetHeight) {
+                pageTabs.classList.remove('has-indicator');
+                return;
+            }
+            pageTabs.style.setProperty('--page-indicator-left', `${activeTab.offsetLeft}px`);
+            pageTabs.style.setProperty('--page-indicator-top', `${activeTab.offsetTop}px`);
+            pageTabs.style.setProperty('--page-indicator-width', `${activeTab.offsetWidth}px`);
+            pageTabs.style.setProperty('--page-indicator-height', `${activeTab.offsetHeight}px`);
+            pageTabs.classList.add('has-indicator');
+        }
+
+        function switchPage(page) {
+            if (page === activePage) return;
+            activePage = page;
+            document.querySelectorAll('.page-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.page === page);
+            });
+            movePageIndicator();
+            document.querySelectorAll('[data-panel]').forEach(panel => {
+                panel.classList.toggle('is-hidden', panel.dataset.panel !== page);
+            });
+            requestAnimationFrame(() => {
+                movePageIndicator();
+                moveFilterIndicator();
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        document.querySelectorAll('.page-tab').forEach(tab => {
+            tab.addEventListener('click', () => switchPage(tab.dataset.page));
+        });
+
+        function isBan(rule) {
+            return rule.punish.toLowerCase().includes('бан');
+        }
+
+        function isFine(rule) {
+            return rule.punish.toLowerCase().includes('штраф');
+        }
+
+        function isSevere(rule) {
+            const punishment = rule.punish.toLowerCase();
+            const hasSevereFine = [...punishment.matchAll(/штраф\s+(\d+)/g)].some(match => Number(match[1]) > 8000);
+            const hasSevereBan = [...punishment.matchAll(/бан\s+(\d+)\s*дн/g)].some(match => Number(match[1]) >= 3);
+            return punishment.includes('назавжди') || hasSevereFine || hasSevereBan;
+        }
+
+        function matchesFilter(rule) {
+            if (activeFilter === 'ban') return isBan(rule);
+            if (activeFilter === 'fine') return isFine(rule);
+            if (activeFilter === 'severe') return isSevere(rule);
+            return true;
+        }
+
+        function getVisibleRules(category) {
+            const query = rulesSearch.value.trim().toLowerCase();
+            const categoryMatches = category.name.toLowerCase().includes(query) || category.description.toLowerCase().includes(query);
+
+            return category.rules.filter(rule => {
+                const ruleText = `${rule.title} ${rule.desc || ''} ${rule.punish}`.toLowerCase();
+                return matchesFilter(rule) && (!query || categoryMatches || ruleText.includes(query));
+            });
+        }
+
+        function renderCategories() {
+            const visibleCategories = categories.map((category, index) => ({
+                category,
+                index,
+                rules: getVisibleRules(category)
+            })).filter(({ rules }) => rules.length > 0);
+
+            categoriesGrid.innerHTML = visibleCategories.map(({ category, index, rules }, visibleIndex) => `
+                <article class="category-card" style="--card-index: ${visibleIndex}" onclick="openModal(${index})" onkeydown="if (event.key === 'Enter' || event.key === ' ') openModal(${index})" tabindex="0" role="button" aria-label="${category.name}">
+                    <div class="category-icon"><i class="${category.icon}"></i></div>
+                    <h3 class="category-name">${category.name}</h3>
+                    <p class="category-desc">${category.description}</p>
+                    <div class="category-meta">
+                        <span>Правила</span>
+                        <span class="category-count"><i class="fa-solid fa-list-check"></i> ${rules.length}</span>
+                    </div>
+                </article>
+            `).join('');
+
+            emptySearch.style.display = visibleCategories.length ? 'none' : 'block';
+        }
+
+        function moveFilterIndicator() {
+            const activeTab = filterTabs.querySelector('.filter-tab.active');
+            if (!activeTab) return;
+            if (!activeTab.offsetWidth || !activeTab.offsetHeight) {
+                filterTabs.classList.remove('has-indicator');
+                return;
+            }
+            filterTabs.style.setProperty('--indicator-left', `${activeTab.offsetLeft}px`);
+            filterTabs.style.setProperty('--indicator-top', `${activeTab.offsetTop}px`);
+            filterTabs.style.setProperty('--indicator-width', `${activeTab.offsetWidth}px`);
+            filterTabs.style.setProperty('--indicator-height', `${activeTab.offsetHeight}px`);
+            filterTabs.classList.add('has-indicator');
+        }
+
+        rulesSearch.addEventListener('input', renderCategories);
+        filterTabs.addEventListener('click', event => {
+            const button = event.target.closest('[data-filter]');
+            if (!button) return;
+            activeFilter = button.dataset.filter;
+            filterTabs.querySelectorAll('.filter-tab').forEach(tab => tab.classList.toggle('active', tab === button));
+            moveFilterIndicator();
+            renderCategories();
+        });
+
+        window.addEventListener('resize', moveFilterIndicator);
+        window.addEventListener('resize', movePageIndicator);
+
+        function getRuleSize(rule) {
+            const textLength = `${rule.title} ${rule.desc || ''}`.length;
+            if (textLength > 58) return 'rule-wide';
+            if (textLength > 32) return 'rule-medium';
+            return 'rule-short';
+        }
+
+        function openModal(index) {
+            const category = categories[index];
+            if (!category) return;
+            const visibleRules = getVisibleRules(category);
+
+            clearTimeout(closeTimer);
+            modal.classList.remove('is-closing');
+            modalContent.innerHTML = `
+                <button class="copy-rule-link" type="button" onclick="copyRuleLink(${index}, this)" aria-label="Скопіювати посилання на розділ" title="Скопіювати посилання на цей розділ">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path></svg>
+                </button>
+                <div class="modal-header">
+                    <div class="icon"><i class="${category.icon}"></i></div>
+                    <div>
+                        <h3>${category.name}</h3>
+                        <p>${category.description}</p>
+                    </div>
+                </div>
+                <div class="rules-list">
+                    ${visibleRules.map((rule, ruleIndex) => `
+                        <div class="rule-item ${getRuleSize(rule)}" style="--rule-index: ${ruleIndex}">
+                            <div class="rule-main">
+                                <p class="rule-title">${rule.title}</p>
+                                ${rule.desc ? `<p class="rule-desc">${rule.desc}</p>` : ''}
+                            </div>
+                            <div class="punishment ${rule.punish.toLowerCase().includes('кпз') ? 'punish-jail' : rule.punish.toLowerCase().includes('бан') || rule.punish.toLowerCase().includes('назавжди') ? 'punish-warning' : 'punish-regular'}">
+                                <span class="punishment-label">Покарання:</span>
+                                <span>${rule.punish}</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            modal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        async function copyRuleLink(categoryIndex, button) {
+            const sectionUrl = new URL(window.location.href);
+            sectionUrl.hash = `rule-category-${categoryIndex}`;
+            const originalIcon = button.innerHTML;
+            try {
+                await navigator.clipboard.writeText(sectionUrl.href);
+            } catch {
+                const textArea = document.createElement('textarea');
+                textArea.value = sectionUrl.href;
+                textArea.style.position = 'fixed';
+                textArea.style.opacity = '0';
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                textArea.remove();
+            }
+            button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>';
+            button.setAttribute('aria-label', 'Посилання скопійовано');
+            button.setAttribute('title', 'Посилання скопійовано');
+            setTimeout(() => {
+                button.innerHTML = originalIcon;
+                button.setAttribute('aria-label', 'Скопіювати посилання на розділ');
+                button.setAttribute('title', 'Скопіювати посилання на цей розділ');
+            }, 1400);
+        }
+
+        function closeModal() {
+            if (!modal.classList.contains('open')) return;
+            modal.classList.add('is-closing');
+            document.body.style.overflow = '';
+            closeTimer = setTimeout(() => {
+                modal.classList.remove('open', 'is-closing');
+            }, 280);
+        }
+
+        document.addEventListener('click', (event) => {
+            if (event.target === modal) closeModal();
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && modal.classList.contains('open')) closeModal();
+        });
+
+        document.getElementById('year').textContent = new Date().getFullYear();
+        renderCategories();
+        moveFilterIndicator();
+        movePageIndicator();
+        const currentHash = window.location.hash.slice(1);
+        const linkedRuleMatch = currentHash.match(/^rule-category-(\d+)$/);
+        const linkedSection = ['rules', 'rulesPanel', 'map', 'mapPanel', 'mayorPanel'].includes(currentHash)
+            ? currentHash
+            : linkedRuleMatch ? 'rulesPanel' : null;
+        if (linkedSection) {
+            const linkedPage = linkedSection === 'mayorPanel'
+                ? 'mayor'
+                : linkedSection === 'map' || linkedSection === 'mapPanel' ? 'map' : 'rules';
+            const linkedPanel = linkedSection === 'map' ? 'mapPanel' : linkedSection === 'rules' ? 'rulesPanel' : linkedSection;
+            switchPage(linkedPage);
+            requestAnimationFrame(() => {
+                movePageIndicator();
+                moveFilterIndicator();
+                document.getElementById(linkedPanel)?.scrollIntoView({ block: 'start' });
+                if (linkedRuleMatch && categories[Number(linkedRuleMatch[1])]) {
+                    openModal(Number(linkedRuleMatch[1]));
+                }
+            });
+        }
+    </script>
+</body>
+</html>
